@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mood Tracker{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scale-hover:hover {
+            transform: scale(1.05);
+        }
+
+        /* Modal backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[linear-gradient(135deg,_#fdecd9,_#fce7f3,_#e3f0ff,_#f3e8ff)]">
+
+
+<div class="flex justify-center mt-4 space-x-4">
+
+
+</div>
+
+<main class="p-4">
+    {% block content %}{% endblock %}
+</main>
+
+<div id="newEntryModal" class="hidden fixed inset-0 flex items-center justify-center modal-backdrop z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-lg relative">
+        <button onclick="closeModal('newEntryModal')"
+                class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+        {% block modal_content %}{% endblock %}
+    </div>
+</div>
+
+<script>
+    // Tab switching
+    function switchTab(tabName) {
+        document.querySelectorAll('[data-tab-content]').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('[data-tab-trigger]').forEach(el => {
+            el.classList.remove('bg-white', 'text-slate-900');
+            el.classList.add('text-slate-600');
+        });
+        document.querySelector(`[data-tab-content="${tabName}"]`).classList.remove('hidden');
+        document.querySelector(`[data-tab-trigger="${tabName}"]`).classList.add('bg-white', 'text-slate-900');
+        document.querySelector(`[data-tab-trigger="${tabName}"]`).classList.remove('text-slate-600');
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function handleModalBackdropClick(event, modalId) {
+        if (event.target === event.currentTarget) {
+            closeModal(modalId);
+        }
+    }
+
+    // Initialize first tab
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstTab = document.querySelector('[data-tab-trigger]');
+        if (firstTab) {
+            switchTab(firstTab.getAttribute('data-tab-trigger'));
+        }
+    });
+</script>
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>
